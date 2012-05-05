@@ -12,6 +12,9 @@ public class Servidor {
     private String ip;
     private int porta;
 
+    public Servidor() {
+    }
+
     public Servidor(String ip, int porta) {
         this.ip = ip;
         this.porta = porta;
@@ -37,7 +40,5 @@ public class Servidor {
     public void setPorta(int porta) {
         this.porta = porta;
     }
-    
-    
     
 }

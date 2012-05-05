@@ -26,11 +26,6 @@ public class Mensagem {
         this.mensagem = mensagem;
         this.tipoMensagem = TipoMensagem.publico;
     }
-    
-    public boolean enviar() {
-        
-        return true;
-    }
 
     public String getMensagem() {
         return mensagem;
@@ -47,6 +42,5 @@ public class Mensagem {
     public void setTipoMensagem(TipoMensagem tipoMensagem) {
         this.tipoMensagem = tipoMensagem;
     }
-    
     
 }
