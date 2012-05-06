@@ -15,8 +15,10 @@ import view.PrincipalView;
 public class Main {
     
     public static void main(String[] args) {
-        PrincipalView p = PrincipalView.getInstance();
-        p.setVisible(true);
+//        PrincipalView p = PrincipalView.getInstance();
+//        p.setVisible(true);
+        Principal p = Principal.getInstance();
+        p.iniciar();
     }
     
 }

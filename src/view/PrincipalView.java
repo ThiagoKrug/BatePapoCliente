@@ -29,7 +29,6 @@ public class PrincipalView extends javax.swing.JFrame implements Observer {
     private PrincipalView() {
         initComponents();
         Principal p = Principal.getInstance();
-        //p.iniciar();
         this.ip = Principal.getPropriedade("ip");
         this.porta = Integer.valueOf(Principal.getPropriedade("porta"));
         this.usuario = Principal.getPropriedade("usuario");
@@ -189,8 +188,8 @@ public class PrincipalView extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_jMenuItemServidorActionPerformed
 
     private void jButtonConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConectarActionPerformed
-        Principal.getInstance().iniciar();
-        //Emissor emissor = new Emissor(Principal.getInstance().getConexaoServidor(), Conexao.SERVER, "SERVER 127.0.0.1 5588");
+        Principal p = Principal.getInstance();
+        p.iniciar();
     }//GEN-LAST:event_jButtonConectarActionPerformed
 
     private void jMenuItemSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSairActionPerformed

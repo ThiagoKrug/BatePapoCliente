@@ -16,44 +16,52 @@ import java.util.logging.Logger;
  *
  * @author thiago
  */
-public class Emissor extends Thread implements Observer {
+public class Emissor extends Thread {
 
     private Socket conexaoServidor;
-    private boolean conexaoTerminada;
     private String comando;
     private String mensagem;
+    private PrintStream saida;
 
     public Emissor(Socket conexaoServidor, String comando, String mensagem) {
         this.conexaoServidor = conexaoServidor;
-        this.conexaoTerminada = false;
         this.comando = comando;
         this.mensagem = mensagem;
+    }
+
+    public Emissor(Socket conexaoServidor, String comando) {
+        this.conexaoServidor = conexaoServidor;
+        this.comando = comando;
+    }
+    
+    public void comandoServer() {
+        saida.println(Conexao.SERVER + " " + Principal.getPropriedade("ip")
+                + " " + Integer.valueOf(Principal.getPropriedade("porta")));
+    }
+
+    public void comandoUser() {
+        saida.println(Conexao.USER + " " + Principal.getPropriedade("usuario"));
+    }
+
+    public void comandoNames() {
+        saida.println(Conexao.NAMES);
     }
 
     @Override
     public void run() {
         try {
             // cria o stream de saida com servidor
-            PrintStream saida = new PrintStream(conexaoServidor.getOutputStream());
+            this.saida = new PrintStream(conexaoServidor.getOutputStream());
             // verifica se a conexao esta aberta
-            if (conexaoTerminada) {
+            if (Receptor.conexaoEncerrada) {
                 return;
+            } else if (comando.equalsIgnoreCase(Conexao.SERVER)) {
+                this.comandoServer();
+            } else if (comando.equalsIgnoreCase(Conexao.USER)) {
+                this.comandoUser();
             }
-            
-            // faz o comando enviado
-            if (comando.equalsIgnoreCase(Conexao.SERVER)) {
-                saida.println(mensagem);
-            }
-            
         } catch (IOException ex) {
             Logger.getLogger(Emissor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        if ("Conexão encerrada".equalsIgnoreCase(String.valueOf(arg))) {
-            this.conexaoTerminada = true;
         }
     }
 

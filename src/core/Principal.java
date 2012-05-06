@@ -3,6 +3,8 @@ package core;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,11 +18,12 @@ import view.PrincipalView;
  *
  * @author thiago
  */
-public class Principal {
+public class Principal implements Observer {
 
     private static Principal principal;
     private Socket conexaoServidor;
     private static Properties configuracao;
+    private Receptor receptor;
 
     private Principal() {
         lerConfiguracao();
@@ -33,42 +36,43 @@ public class Principal {
         return principal;
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+    }
+
     public void iniciar() {
         try {
             conexaoServidor = new Socket(configuracao.getProperty("ip"),
-                     Integer.valueOf(configuracao.getProperty("porta")));
-            //Emissor emissor = new Emissor(getConexaoServidor());
-//            Thread receptor = new Thread(new Receptor(conexaoServidor, PrincipalView.getInstance()));
-//            receptor.start();
-            //emissor.start();
-            
-            PrintStream saida = new PrintStream(conexaoServidor.getOutputStream()); 
+                    Integer.valueOf(configuracao.getProperty("porta")));
+            PrintStream saida = new PrintStream(conexaoServidor.getOutputStream());
             BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("Entre com o seu nome: ");
-            String meuNome = "SERVER localhost 5588"; // teclado.readLine();
+            saida.println(Conexao.SERVER + " " + configuracao.getProperty("ip") + " "
+                    + Integer.valueOf(configuracao.getProperty("porta")));
+            System.out.println("Entre com o nome do usuário: ");
+            String meuNome = teclado.readLine();
             saida.println(meuNome);
-            Receptor r = new Receptor(conexaoServidor, PrincipalView.getInstance());
-            Thread receptor = new Thread(r);
-            receptor.start();
-            
-            String linha;
+            this.receptor = new Receptor(conexaoServidor);
+            Thread r = new Thread(this.receptor);
+            r.start();
 
+            String linha;
             while (true) {
                 // ler a linha digitada no teclado   
-                System.out.print("> ");
                 linha = teclado.readLine();
-                // antes de enviar, verifica se a conexão não foi fechada   
-//                if (done) {
-//                    break;
-//                }
+                
+                if ("QUIT".equalsIgnoreCase(new Interpretador().interpretarMensagem(linha)[0])) {
+                    break;
+                }
                 // envia para o servidor   
                 saida.println(linha);
             }
-            
+
         } catch (UnknownHostException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            System.exit(1);
         }
     }
 
@@ -121,5 +125,18 @@ public class Principal {
     public void setConexaoServidor(Socket conexaoServidor) {
         this.conexaoServidor = conexaoServidor;
     }
-    
+
+    /**
+     * @return the receptor
+     */
+    public Receptor getReceptor() {
+        return receptor;
+    }
+
+    /**
+     * @param aReceptor the receptor to set
+     */
+    public void setReceptor(Receptor aReceptor) {
+        receptor = aReceptor;
+    }
 }

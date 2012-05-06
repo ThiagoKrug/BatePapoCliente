@@ -12,7 +12,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -22,10 +22,10 @@ public class Receptor extends Observable implements Runnable {
 
     private Socket conexaoServidor;
     public static boolean conexaoEncerrada;
+    private String mensagemServidor;
 
-    public Receptor(Socket conexaoServidor, Observer observador) {
+    public Receptor(Socket conexaoServidor) {
         this.conexaoServidor = conexaoServidor;
-        this.addObserver(observador);
     }
 
     @Override
@@ -46,8 +46,24 @@ public class Receptor extends Observable implements Runnable {
             }
         } catch (IOException e) {
             Logger.getLogger(Receptor.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            System.exit(1);
         }
         // sinaliza para o emissor que a conexão terminou
         Receptor.conexaoEncerrada = true;
+    }
+
+    /**
+     * @return the mensagemServidor
+     */
+    public String getMensagemServidor() {
+        return mensagemServidor;
+    }
+
+    /**
+     * @param mensagemServidor the mensagemServidor to set
+     */
+    public void setMensagemServidor(String mensagemServidor) {
+        this.mensagemServidor = mensagemServidor;
     }
 }
