@@ -8,7 +8,6 @@ import java.util.Observer;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import view.PrincipalView;
 
 /*
  * To change this template, choose Tools | Templates and open the template in
