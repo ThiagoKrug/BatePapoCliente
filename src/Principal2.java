@@ -14,22 +14,22 @@ import java.util.logging.Logger;
  *
  * @author thiago
  */
-public class Principal {
+public class Principal2 {
 
-    private static Principal p;
-    private Conexao conexao;
+    private static Principal2 p;
+    private Conexao2 conexao;
     private Servidor servidor;
     private BufferedReader br;
 
-    private Principal() {
-        conexao = Conexao.getInstance();
+    private Principal2() {
+        conexao = Conexao2.getInstance();
         servidor = new Servidor();
         br = new BufferedReader(new InputStreamReader(System.in));
     }
 
-    public static Principal getInstance() {
+    public static Principal2 getInstance() {
         if (p == null) {
-            p = new Principal();
+            p = new Principal2();
         }
         return p;
     }
@@ -47,7 +47,7 @@ public class Principal {
             System.out.println("Informe o número da porta do servidor:");
             porta = Integer.valueOf(br.readLine());
         } catch (IOException ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Principal2.class.getName()).log(Level.SEVERE, null, ex);
         }
         servidor.setIp(ip);
         servidor.setPorta(porta);
@@ -60,14 +60,14 @@ public class Principal {
         try {
             socket = new DatagramSocket();
         } catch (SocketException ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Principal2.class.getName()).log(Level.SEVERE, null, ex);
         }
         byte[] msg = m.getBytes();
         InetAddress host = null;
         try {
             host = InetAddress.getByName(server.getIp());
         } catch (UnknownHostException ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Principal2.class.getName()).log(Level.SEVERE, null, ex);
         }
         int porta = server.getPorta();
 
@@ -76,14 +76,14 @@ public class Principal {
         try {
             socket.send(request);
         } catch (IOException ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Principal2.class.getName()).log(Level.SEVERE, null, ex);
         }
         byte[] buffer = new byte[1000];
         DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
         try {
             socket.receive(reply);
         } catch (IOException ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Principal2.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("Reply: " + new String(reply.getData()));
         if (socket != null) {

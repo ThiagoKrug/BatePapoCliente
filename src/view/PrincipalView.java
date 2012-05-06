@@ -4,39 +4,45 @@
  */
 package view;
 
+import core.Conexao;
+import core.Emissor;
+import core.Principal;
 import java.awt.event.KeyEvent;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author thiago
  */
-public class Principal extends javax.swing.JFrame {
+public class PrincipalView extends javax.swing.JFrame implements Observer {
 
-    private Properties configuracao;
+    private static PrincipalView principalView;
     private String ip;
     private int porta;
-    private Conexao conexao;
     private String usuario;
 
     /**
-     * Creates new form Principal
+     * Creates new form PrincipalView
      */
-    public Principal() {
-        this.lerConfiguracao();
+    private PrincipalView() {
         initComponents();
-        this.ip = configuracao.getProperty("ip");
-        this.porta = Integer.valueOf(configuracao.getProperty("porta"));
-        this.usuario = this.configuracao.getProperty("usuario");
+        Principal p = Principal.getInstance();
+        //p.iniciar();
+        this.ip = Principal.getPropriedade("ip");
+        this.porta = Integer.valueOf(Principal.getPropriedade("porta"));
+        this.usuario = Principal.getPropriedade("usuario");
         this.jLabelServidor.setText(this.ip + ":" + this.porta);
-        this.conexao = new Conexao(ip, porta);
     }
+    
+    public static PrincipalView getInstance() {
+        if (principalView == null) {
+            principalView = new PrincipalView();
+        }
+        return principalView;
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -183,22 +189,8 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemServidorActionPerformed
 
     private void jButtonConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConectarActionPerformed
-        if (this.jButtonConectar.getText().equalsIgnoreCase("Conectar")) {
-            this.conexao.commandServer();
-            String[] mensagem = this.conexao.commandUser(usuario);
-            if (mensagem[0].equalsIgnoreCase("OK_USERNAME")) {
-                this.jButtonConectar.setText("Desconectar");
-                this.jTextAreaPrincipal.append(mensagem[1] + " conectado!");
-            } else if (mensagem[0].equalsIgnoreCase("ERR_INVALIDUSERNAME")) {
-                JOptionPane.showMessageDialog(null, "O nome de usuário " + mensagem[1] + " é inválido!\nPor favor, utilize somente letra, números ou _ no nome de usuário", "BatePapoCliente", JOptionPane.ERROR_MESSAGE);
-            } else if (mensagem[0].equalsIgnoreCase("ERR_NEEDMOREPARAMS")) {
-                JOptionPane.showMessageDialog(null, "O nome de usuário não foi informado!\nPor favor, verifique.", "BatePapoCliente", JOptionPane.ERROR_MESSAGE);
-            } else if (mensagem[0].equalsIgnoreCase("ERR_ALREADYREGISTRED")) {
-                JOptionPane.showMessageDialog(null, "O nome de usuário " + mensagem[1] + " já está sendo utilizado!\nPor favor, utilize outro nome de usuário.", "BatePapoCliente", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            
-        }
+        Principal.getInstance().iniciar();
+        //Emissor emissor = new Emissor(Principal.getInstance().getConexaoServidor(), Conexao.SERVER, "SERVER 127.0.0.1 5588");
     }//GEN-LAST:event_jButtonConectarActionPerformed
 
     private void jMenuItemSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSairActionPerformed
@@ -211,52 +203,52 @@ public class Principal extends javax.swing.JFrame {
 
     private void jTextFieldMensagemKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldMensagemKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            this.conexao.commandMensagem(this.jTextFieldMensagem.getText());
+            //this.conexao.commandMensagem(this.jTextFieldMensagem.getText());
             this.jTextFieldMensagem.setText("");
         }
     }//GEN-LAST:event_jTextFieldMensagemKeyPressed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /*
-         * Set the Nimbus look and feel
-         */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /*
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the
-         * default look and feel. For details see
-         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /*
-         * Create and display the form
-         */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                new Principal().setVisible(true);
-            }
-        });
-    }
+//    /**
+//     * @param args the command line arguments
+//     */
+//    public static void main(String args[]) {
+//        /*
+//         * Set the Nimbus look and feel
+//         */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /*
+//         * If Nimbus (introduced in Java SE 6) is not available, stay with the
+//         * default look and feel. For details see
+//         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(PrincipalView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(PrincipalView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(PrincipalView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(PrincipalView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /*
+//         * Create and display the form
+//         */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//
+//            public void run() {
+//                new PrincipalView().setVisible(true);
+//            }
+//        });
+//    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonConectar;
     private javax.swing.JLabel jLabelServidor;
@@ -273,17 +265,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldMensagem;
     // End of variables declaration//GEN-END:variables
 
-    private void lerConfiguracao() {
-        configuracao = new Properties();
-        FileReader fr;
-        try {
-            fr = new FileReader("configuracao.prop");
-            configuracao.load(fr);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+    @Override
+    public void update(Observable o, Object arg) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
+
 }

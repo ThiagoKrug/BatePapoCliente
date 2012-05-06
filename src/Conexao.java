@@ -1,77 +1,132 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 
 import java.io.IOException;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
  * @author thiago
  */
 public class Conexao {
-    
-    private static Conexao conexao = null;
-    private DatagramSocket socket;
 
-    private Conexao() {
-        
+    private String ip;
+    private int porta;
+
+    public Conexao(String ip, int porta) {
+        this.ip = ip;
+        this.porta = porta;
     }
-    
-    public static Conexao getInstance() {
-        if (conexao == null) {
-            conexao = new Conexao();
-        }
-        return conexao;
+
+    public void commandServer() {
+        this.enviarReceber("SERVER " + ip + " " + porta);
     }
-    
-    public void enviar(Servidor server, Mensagem m) {
-        DatagramSocket socket;
-        socket = null;
+
+    public String[] commandUser(String username) {
+        return this.enviarReceber("USER " + username);
+    }
+
+    public void commandMensagem(String text) {
+        this.enviar("MSG " + text);
+    }
+
+    public String[] enviarReceber(String m) {
+        DatagramSocket socket = null;
         try {
             socket = new DatagramSocket();
         } catch (SocketException ex) {
-            Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PrincipalView.class.getName()).log(Level.SEVERE, null, ex);
         }
-        byte[] msg = m.getMensagem().getBytes();
+        byte[] msg = m.getBytes();
         InetAddress host = null;
         try {
-            host = InetAddress.getByName(server.getIp());
+            host = InetAddress.getByName(ip);
         } catch (UnknownHostException ex) {
-            Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PrincipalView.class.getName()).log(Level.SEVERE, null, ex);
         }
-        int porta = server.getPorta();
-        
-        DatagramPacket request = new DatagramPacket(msg, m.getMensagem().length(), host, porta);
+
+        DatagramPacket request = new DatagramPacket(msg, m.length(), host, porta);
+
         try {
             socket.send(request);
         } catch (IOException ex) {
-            Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            socket = new DatagramSocket();
-        } catch (SocketException ex) {
-            Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PrincipalView.class.getName()).log(Level.SEVERE, null, ex);
         }
         byte[] buffer = new byte[1000];
         DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
-        //System.out.println("1");
         try {
-            //System.out.println("2");
             socket.receive(reply);
-            System.out.println("3");
         } catch (IOException ex) {
-            Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PrincipalView.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("4");
         System.out.println("Reply: " + new String(reply.getData()));
         if (socket != null) {
             socket.close();
         }
+        return new Interpretador().interpretarMensagem(reply);
     }
-    
+
+    public void enviar(String m) {
+        DatagramSocket socket = null;
+        try {
+            socket = new DatagramSocket();
+        } catch (SocketException ex) {
+            Logger.getLogger(PrincipalView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        byte[] msg = m.getBytes();
+        InetAddress host = null;
+        try {
+            host = InetAddress.getByName(ip);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(PrincipalView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        DatagramPacket request = new DatagramPacket(msg, m.length(), host, porta);
+
+        try {
+            socket.send(request);
+        } catch (IOException ex) {
+            Logger.getLogger(PrincipalView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (socket != null) {
+            socket.close();
+        }
+    }
+
+    class Receptora extends Thread {
+        
+        private ServerSocket serverSocket;
+        private 
+
+        public Receptora() {
+        }
+
+        public void run() {
+            while (true) {
+                try {
+                    DatagramSocket conexao = serverSocket.accept();
+                } catch (IOException ex) {
+                    Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                DatagramSocket socket = null;
+                byte[] buffer = new byte[1000];
+                DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+                try {
+                    socket.receive(reply);
+                } catch (IOException ex) {
+                    Logger.getLogger(PrincipalView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Reply: " + new String(reply.getData()));
+                if (socket != null) {
+                    socket.close();
+                }
+                String[] mensagem = new Interpretador().interpretarMensagem(reply);
+            }
+        }
+    }
 }
