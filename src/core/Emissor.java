@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package core;
 
 import java.io.IOException;
@@ -13,8 +9,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author thiago
+ * Classe emissor e que extende a classe Thread
+ * @author Bruno Vicelli
+ * @author Mateus Henrique Dal Forno
+ * @author Thiago Cassio Krug
  */
 public class Emissor extends Thread {
 
@@ -23,26 +21,47 @@ public class Emissor extends Thread {
     private String mensagem;
     private PrintStream saida;
 
+    /**
+     * Metodo construtor da classe Emissor, que recebe como parametro um socket,
+     * um comando e uma mensagem.
+     * @param conexaoServidor
+     * @param comando
+     * @param mensagem 
+     */
     public Emissor(Socket conexaoServidor, String comando, String mensagem) {
         this.conexaoServidor = conexaoServidor;
         this.comando = comando;
         this.mensagem = mensagem;
     }
 
+    /**
+     * Metodo construtor da classe Emissor, que recebe como parametro um socket
+     * e um comando.
+     * @param conexaoServidor
+     * @param comando 
+     */
     public Emissor(Socket conexaoServidor, String comando) {
         this.conexaoServidor = conexaoServidor;
         this.comando = comando;
     }
     
+    /**
+     * 
+     */
     public void comandoServer() {
         saida.println(Conexao.SERVER + " " + Principal.getPropriedade("ip")
                 + " " + Integer.valueOf(Principal.getPropriedade("porta")));
     }
 
+    /**
+     * Comando responsavel por informar o nome do usuario.
+     */
     public void comandoUser() {
         saida.println(Conexao.USER + " " + Principal.getPropriedade("usuario"));
     }
-
+    /**
+     * Comando responsavel por verificar os clientes conectados.
+     */
     public void comandoNames() {
         saida.println(Conexao.NAMES);
     }
@@ -66,6 +85,7 @@ public class Emissor extends Thread {
     }
 
     /**
+     * Metodo que retorna o comando
      * @return the comando
      */
     public String getComando() {
@@ -73,6 +93,7 @@ public class Emissor extends Thread {
     }
 
     /**
+     * Metodo que seta um comando
      * @param comando the comando to set
      */
     public void setComando(String comando) {
@@ -80,6 +101,7 @@ public class Emissor extends Thread {
     }
 
     /**
+     * Metodo que retorna uma mensagem
      * @return the mensagem
      */
     public String getMensagem() {
@@ -87,6 +109,7 @@ public class Emissor extends Thread {
     }
 
     /**
+     * Metodo que seta uma mensagem
      * @param mensagem the mensagem to set
      */
     public void setMensagem(String mensagem) {

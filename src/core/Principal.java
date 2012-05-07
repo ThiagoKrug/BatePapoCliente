@@ -9,13 +9,11 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
- */
 /**
- *
- * @author thiago
+ * Classe principal do sistema, que utiliza o padrão de projeto observer.
+ * @author Bruno Vicelli
+ * @author Mateus Henrique Dal Forno
+ * @author Thiago Cassio Krug
  */
 public class Principal implements Observer {
 
@@ -24,10 +22,19 @@ public class Principal implements Observer {
     private static Properties configuracao;
     private Receptor receptor;
 
+    
+    /**
+     * Método construtor da classe principal
+     */
     private Principal() {
         lerConfiguracao();
     }
 
+    /**
+     * Método que instancia um objeto da classe principal, utilizando-se do
+     * padrão de projeto singleton.
+     * @return 
+     */
     public static Principal getInstance() {
         if (principal == null) {
             principal = new Principal();
@@ -35,10 +42,15 @@ public class Principal implements Observer {
         return principal;
     }
 
+    @Deprecated
     @Override
     public void update(Observable o, Object arg) {
     }
 
+    /**
+     * Método que inicia a conexão com o servidor e que fica aguardando a ação
+     * do usuário.
+     */
     public void iniciar() {
         try {
             conexaoServidor = new Socket(configuracao.getProperty("ip"),
@@ -75,18 +87,35 @@ public class Principal implements Observer {
         }
     }
 
+    /**
+     * Método que retorna a configuração
+     * @return configuracao
+     */
     public static Properties getConfiguracao() {
         return configuracao;
     }
 
+    /**
+     * Metodo que retorna a propriedade a partir de uma determinada chave.
+     * @param chave
+     * @return  
+     */
     public static String getPropriedade(String chave) {
         return configuracao.getProperty(chave);
     }
 
+    /**
+     * Método que altera o valor de uma propriedade de uma dererminada chave.
+     * @param chave
+     * @param valor 
+     */
     public static void setPropriedade(String chave, String valor) {
         configuracao.setProperty(chave, valor);
     }
 
+    /**
+     * Método estático que lê o arquivo de configuração
+     */
     public static void lerConfiguracao() {
         configuracao = new Properties();
         FileReader fr;
@@ -100,6 +129,9 @@ public class Principal implements Observer {
         }
     }
 
+    /**
+     * Metodo estático que grava a configuração no arquivo.
+     */
     public static void gravarConfiguracao() {
         try {
             FileWriter fw = new FileWriter("configuracao.prop");
@@ -112,6 +144,7 @@ public class Principal implements Observer {
     }
 
     /**
+     * Metodo que reorna a conexão com o servidor
      * @return the conexaoServidor
      */
     public Socket getConexaoServidor() {
@@ -119,6 +152,7 @@ public class Principal implements Observer {
     }
 
     /**
+     * Metodo que seta o socket do servidor
      * @param conexaoServidor the conexaoServidor to set
      */
     public void setConexaoServidor(Socket conexaoServidor) {
@@ -126,6 +160,7 @@ public class Principal implements Observer {
     }
 
     /**
+     * Metodo que retorna o receptor.
      * @return the receptor
      */
     public Receptor getReceptor() {
@@ -133,6 +168,7 @@ public class Principal implements Observer {
     }
 
     /**
+     * Método que seta um receptor.
      * @param aReceptor the receptor to set
      */
     public void setReceptor(Receptor aReceptor) {

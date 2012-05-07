@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package core;
 
 import java.io.BufferedReader;
@@ -15,19 +11,33 @@ import java.util.logging.Logger;
 
 
 /**
- *
- * @author thiago
+ * Classe responsável por receber as mensagens do servidor
+ * @author Bruno Vicelli
+ * @author Mateus Henrique Dal Forno
+ * @author Thiago Cassio Krug
  */
 public class Receptor extends Observable implements Runnable {
 
     private Socket conexaoServidor;
+    
+    /**
+     * Metodo estático que seta como true ou false se a conexao encontra-se
+     * encerrada.
+     */
     public static boolean conexaoEncerrada;
     private String mensagemServidor;
 
+    /**
+     * Metodo construtor da classe Receptor que recebe como parametro Um socket
+     * @param conexaoServidor 
+     */
     public Receptor(Socket conexaoServidor) {
         this.conexaoServidor = conexaoServidor;
     }
 
+    /**
+     * Metodo que faz a troca de mensagens entre o cliente e o servidor
+     */
     @Override
     public void run() {
         try {
@@ -54,6 +64,7 @@ public class Receptor extends Observable implements Runnable {
     }
 
     /**
+     * Metodo que retorna a mensagem do servidor
      * @return the mensagemServidor
      */
     public String getMensagemServidor() {
@@ -61,6 +72,7 @@ public class Receptor extends Observable implements Runnable {
     }
 
     /**
+     * Metodo que seta a mensagem do Servidor
      * @param mensagemServidor the mensagemServidor to set
      */
     public void setMensagemServidor(String mensagemServidor) {

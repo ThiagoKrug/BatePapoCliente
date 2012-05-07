@@ -1,12 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package core;
 
 /**
- *
- * @author thiago
+ * Classe abstrata Conexao. Estabelece os atributos estáticos do protocolo.
+ * 
+ * @author Bruno Vicelli
+ * @author Mateus Henrique Dal Forno
+ * @author Thiago Cassio Krug
  */
 public abstract class Conexao {
     
