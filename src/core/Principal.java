@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Classe principal do sistema, que utiliza o padrão de projeto observer.
+ * Classe principal do sistema, que utiliza o padrão de projeto singleton.
  * @author Bruno Vicelli
  * @author Mateus Henrique Dal Forno
  * @author Thiago Cassio Krug
